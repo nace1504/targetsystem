@@ -15,6 +15,7 @@ Một hệ 2-agent giám sát an ninh (SOC) mô phỏng, gồm **lớp agentic**
 | 02 | `02-design.md` | Kiến trúc, mạng, route, database, luồng dữ liệu, kịch bản tấn công |
 | 03 | `03-checklist.md` | Trạng thái build từng hạng mục (đối chiếu code thật) |
 | 04 | `04-detailed-design.md` | Chi tiết kỹ thuật để code thẳng: schema/API chính xác, data flow 7 kịch bản, network/deploy thật, test strategy + fixtures — đọc TRƯỚC khi code bất kỳ module nào |
+| 05 | `05-detailed-design-part2.md` | Agent B đầy đủ, HMAC 2 biến thể, system prompt LLM thật, Tool Service, tracing/Langfuse schema, lớp ingest (firewall/Wazuh decoder/ingest-api/dispatcher) |
 | — | `source/` | Tài liệu nguồn gốc dự án tổng (đề bài, PRD, TRD, testbed spec, kế hoạch team) — dùng để đối chiếu chi tiết, không phải bản đọc chính |
 
 ## 3. Trạng thái
