@@ -7,6 +7,7 @@ networks:
     name: ts-dmz-net
   sandbox_net:
     name: ts-sandbox-net
+    internal: true
   tools_net:
     name: ts-tools-net
     internal: true
@@ -54,43 +55,51 @@ services:
   host-registry:
     build: ./core/host_registry
     container_name: ts-host-registry
+    env_file: [.env]
     networks: [sandbox_net]
 
   rag:
     build: ./core/rag
     container_name: ts-rag
+    env_file: [.env]
     networks: [sandbox_net]
 
   agent-a:
     build: ./core/agent_a
     container_name: ts-agent-a
+    env_file: [.env]
     networks: [sandbox_net]
 
   agent-b:
     build: ./core/agent_b
     container_name: ts-agent-b
+    env_file: [.env]
     networks: [sandbox_net]
 
   gateway:
     build: ./core/gateway
     container_name: ts-gateway
+    env_file: [.env]
     networks: [sandbox_net, tools_net]
 
   tools:
     build: ./core/tools
     container_name: ts-tools
+    env_file: [.env]
     networks: [tools_net]
 
   # ── Lớp ingest & lab tấn công (ingest/) — TODO: build theo PLAN.md bước 5 ──
   ingest-api:
     build: ./ingest/ingest-api
     container_name: ts-ingest-api
-    networks: [dmz, sandbox_net]
+    env_file: [.env]
+    networks: [dmz]   # KHÔNG dual-homed sang sandbox_net — chỉ dispatcher được bắc cầu (04-technical-design.md mục 6.1)
 
   dispatcher:
     build: ./ingest/dispatcher
     container_name: ts-dispatcher
-    networks: [sandbox_net]
+    env_file: [.env]
+    networks: [dmz, sandbox_net]   # container DUY NHẤT bắc cầu lớp ingest <-> lớp agentic
 
   # firewall, dvwa, wazuh-manager, wazuh-indexer, wazuh-dashboard, attacker, tailscale:
   # thêm sau ở bước 5 (PLAN.md) — chưa cần trong giai đoạn build lớp agentic
