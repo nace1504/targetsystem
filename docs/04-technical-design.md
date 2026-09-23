@@ -279,7 +279,13 @@ A2A_SIGNING_SECRET=
 RAG_BACKEND=qdrant
 RUN_LLM_TESTS=0   # 1 = cho phép test gọi LLM thật (tests/unit mặc định skip có lý do rõ ràng nếu =0, không skip im lặng)
 LLM_API_KEY=
+LANGFUSE_ENABLED=false
+LANGFUSE_PUBLIC_KEY=
+LANGFUSE_SECRET_KEY=
+LANGFUSE_HOST=https://cloud.langfuse.com   # cloud free-tier, đã chốt trong trd_swarmsentinel.md §8 — không self-host
 ```
+
+Khi `LANGFUSE_ENABLED=false` (vd chạy unit test offline), `common/tracing.py` dùng no-op span (không gọi Langfuse SDK thật) nhưng vẫn PHẢI enforce đủ 4 field bắt buộc (mục 11) trước khi bỏ qua — không được skip luôn phần validate.
 
 ### 6.4 Thứ tự khởi động (`depends_on: condition: service_healthy`)
 

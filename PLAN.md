@@ -1,6 +1,8 @@
 # Target System — Kế hoạch xây dựng chuẩn chỉnh
 
 > Mục tiêu: dựng đúng scope theo `docs/source/testbed_spec.md`/PRD/TRD, sạch tên gọi ngay từ đầu — không phải sửa lại sau.
+>
+> **Trước khi code bất kỳ bước nào dưới đây, đọc `docs/04-technical-design.md`** — schema/API/rule/prompt/fixture chính xác đã chốt sẵn, không tự đoán.
 
 ## 0. Vì sao đặt tên chuẩn ngay từ đầu
 
@@ -22,11 +24,12 @@ Hệ thống có 2 lớp (agentic + ingest & lab tấn công) do 2 người ph�
 
 ```
 Target System/
+├── README.md
+├── CLAUDE.md
 ├── PLAN.md                    ← file này
-├── docker-compose.yml
-├── docker-compose.patched.yml
-├── docker-compose.unpatched.yml
+├── docker-compose.yml         ← 1 file duy nhất, biến TARGET_VARIANT (patched|unpatched) chọn biến thể — KHÔNG tách 2 file compose riêng
 ├── .env.example
+├── .gitignore
 ├── core/                      ← lớp agentic (agent-a, agent-b, gateway, host-registry, rag, tools, common)
 │   ├── agent_a/
 │   ├── agent_b/
@@ -34,23 +37,32 @@ Target System/
 │   ├── host_registry/
 │   ├── rag/
 │   ├── tools/
-│   └── common/                ← tracing, IAM helpers dùng chung
+│   └── common/                ← tracing, IAM helpers, http_client dùng chung
 ├── ingest/                    ← lớp ingest & lab tấn công (firewall, dvwa, wazuh, ingest-api, dispatcher, attacker, tailscale)
 │   ├── firewall/
 │   ├── ingest-api/
 │   ├── dispatcher/
-│   └── wazuh/
+│   ├── wazuh/
+│   │   ├── decoders/
+│   │   └── rules/
+│   └── scripts/               ← check_network_boundaries.py (dùng trong CI)
 ├── db/
 │   └── schema.sql
 ├── tests/
 │   ├── unit/
-│   └── integration/
+│   ├── integration/
+│   └── fixtures/               ← alerts.json, threat_intel_seed.json, judge_ground_truth.json
+├── .github/
+│   └── workflows/
+│       └── ci.yml
 └── docs/
     ├── 00-tong-quan.md
     ├── 01-requirements.md
     ├── 02-design.md
     ├── 03-checklist.md
-    └── runbook.md
+    ├── 04-technical-design.md  ← BẮT BUỘC đọc trước khi code — schema/API/rule/fixture chi tiết
+    ├── RUNBOOK.md               ← chỉ tạo khi có sự cố thật, KHÔNG tạo trước rỗng
+    └── source/                  ← tài liệu nguồn dự án tổng (đề bài, PRD, TRD, testbed spec, kế hoạch team)
 ```
 
 ## 3. Thứ tự build (theo phụ thuộc, không theo cảm hứng)
@@ -58,7 +70,7 @@ Target System/
 1. **Nền tảng:** `docker-compose.yml` khung (network + Postgres) → không có service nghiệp vụ nào chạy được nếu bước này sai.
 2. **Lớp agentic (core/):** HostRegistry → RAG → Agent A → Agent B → Gateway (IAM per-identity) → Tools. Đây là phần Claude Code hỗ trợ nhanh nhất — code có khuôn mẫu rõ theo contract đã biết (`docs/source/testbed_spec.md`).
 3. **Test lớp agentic:** viết test suite đầy đủ (unit + integration), chạy pass trước khi đụng vào lớp ingest.
-4. **2 biến thể patched/unpatched:** chữ ký A2A + bọc untrusted-data — làm ngay sau khi lớp agentic ổn định, đừng để cuối.
+4. **2 biến thể patched/unpatched:** chữ ký A2A (HMAC, mục 8.3 `04-technical-design.md`) + bọc untrusted-data — chọn qua biến `TARGET_VARIANT=patched|unpatched` trong `.env`, KHÔNG tách 2 file `docker-compose` riêng. Làm ngay sau khi lớp agentic ổn định, đừng để cuối.
 5. **Lớp ingest & lab tấn công:** firewall → DVWA → Wazuh Manager/Indexer/Dashboard → Ingest API → dispatcher → Attacker/Tailscale. Đây là phần tốn thời gian thật (chạy-và-chờ, không compress được nhiều bằng AI).
 6. **Nối 2 lớp:** dispatcher → Agent A, verify bằng 1 cuộc tấn công DVWA thật → xem alert đi hết pipeline.
 7. **7 kịch bản tấn công:** wire + test lại từng kịch bản, đối chiếu đúng `docs/source/testbed_spec.md`.
