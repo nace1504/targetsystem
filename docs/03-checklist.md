@@ -52,7 +52,7 @@
 |---|---|:---:|---|
 | C1 | Route prefix `/agent-b/*` khớp spec | ❌ | |
 | C2 | Body 403 `{error: "scope_violation", required_scope}` khớp spec | ❌ | |
-| C3 | Gateway nội bộ = FastAPI (không phải Kong) — xác nhận với Attacker System | ❌ | |
+| C3 | Gateway nội bộ = FastAPI (không phải Kong) — xác nhận với Attacker System | ❌ | Tài liệu nguồn đã sửa (`docs/source/testbed_spec.md`), còn thiếu xác nhận thật từ team Attacker System |
 | C4 | Route ghi RAG `POST /internal/rag/upsert` khớp spec | ❌ | |
 | C5 | Route `/agent-b/read_alert` | ❌ | Chờ xác nhận — xem A13 |
 | C6 | Tài liệu đối chiếu contract cập nhật đầy đủ | ❌ | |
