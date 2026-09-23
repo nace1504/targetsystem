@@ -2,7 +2,7 @@
 
 > Bản mới, trạng thái ban đầu = **chưa làm gì** (❌ toàn bộ). Cập nhật dần thành ✅ khi có code + test pass thật, theo đúng thứ tự trong `PLAN.md`. ✅ = có code + test pass thật · ⚠️ = có nhưng còn giới hạn/thủ công · ❌ = chưa làm.
 
-## A. Lớp agentic — lõi Target System theo `testbed_spec.md`
+## A. Lớp agentic — lõi Target System theo `docs/source/testbed_spec.md`
 
 | # | Hạng mục | Trạng thái | Ghi chú |
 |---|---|:---:|---|
@@ -20,7 +20,7 @@
 | A12 | Gateway: route `/agent-b/propose_action`, `/agent-b/execute_block` (prefix `/agent-b/*`) | ❌ | |
 | A13 | Gateway: `/agent-b/read_alert` | ❌ | Chốt mục đích với team Attacker System trước khi build |
 | A14 | Gateway: IAM per-identity (không phải 403 cứng cho mọi người) | ❌ | |
-| A15 | Gateway: 401 sai/thiếu key, 403 `{error, required_scope}` đúng đủ key thiếu scope | ❌ | Phải khớp `testbed_spec.md` ngay từ đầu |
+| A15 | Gateway: 401 sai/thiếu key, 403 `{error, required_scope}` đúng đủ key thiếu scope | ❌ | Phải khớp `docs/source/testbed_spec.md` ngay từ đầu |
 | A16 | Gateway: guard chống misconfig trùng key privileged/agent-b | ❌ | |
 | A17 | Gateway: pass-through A2A không xác thực (đúng thiết kế) | ❌ | |
 | A18 | HostRegistry: GET/PUT `/internal/host-registry/{id}` | ❌ | |
@@ -46,7 +46,7 @@
 | B6 | Attacker container LAN + Tailscale VPN từ xa | ❌ | |
 | B7 | Nạp cấu hình Wazuh tự động khi container khởi động | ❌ | Làm tự động ngay từ đầu, tránh làm tay dễ quên |
 
-## C. Contract với Attacker System (`testbed_spec.md`)
+## C. Contract với Attacker System (`docs/source/testbed_spec.md`)
 
 | # | Hạng mục | Trạng thái | Ghi chú |
 |---|---|:---:|---|

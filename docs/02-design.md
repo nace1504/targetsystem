@@ -1,6 +1,6 @@
 # Target System (SwarmSentinel) — Tài liệu Thiết kế (Design)
 
-> Kiến trúc mục tiêu, rút từ yêu cầu dự án tổng (`testbed_spec.md`, `trd_swarmsentinel.md`). Xem `01-requirements.md` cho phạm vi/yêu cầu; tài liệu này tập trung **xây thế nào**. Quy ước tên gọi (`ts-*`, `core/`, `ingest/`) theo `PLAN.md`.
+> Kiến trúc mục tiêu, rút từ yêu cầu dự án tổng (`docs/source/testbed_spec.md`, `docs/source/trd_swarmsentinel.md`). Xem `01-requirements.md` cho phạm vi/yêu cầu; tài liệu này tập trung **xây thế nào**. Quy ước tên gọi (`ts-*`, `core/`, `ingest/`) theo `PLAN.md`.
 
 ---
 
@@ -140,7 +140,7 @@ flowchart TB
 | `gateway` | `/a2a/response-advisor` | POST | Pass-through A2A tới Agent B, không xác thực | Không |
 | `gateway` | `/agent-b/propose_action` | POST | Forward tới `tools` nếu đủ scope `tools:propose` | Header `apikey`, cần scope |
 | `gateway` | `/agent-b/execute_block` | POST | Forward tới `tools` nếu đủ scope `block:execute` | Header `apikey`, cần scope — Agent B luôn thiếu scope này |
-| `gateway` | `/agent-b/read_alert` | — | Có trong `testbed_spec.md` §3 nhưng mục đích chưa rõ — **chốt với team Attacker System trước khi build** | — |
+| `gateway` | `/agent-b/read_alert` | — | Có trong `docs/source/testbed_spec.md` §3 nhưng mục đích chưa rõ — **chốt với team Attacker System trước khi build** | — |
 | `gateway` | `/health` | GET | Health check | — |
 | `host-registry` | `/internal/host-registry/{host_id}` | GET | Tra `owner`, `criticality` | Không |
 | `host-registry` | `/internal/host-registry/{host_id}` | PUT | Ghi/cập nhật — điểm cấy đầu độc Kịch bản 2 | Không (cố ý) |

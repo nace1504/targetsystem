@@ -277,6 +277,8 @@ TAILSCALE_AUTHKEY=
 TARGET_VARIANT=unpatched
 A2A_SIGNING_SECRET=
 RAG_BACKEND=qdrant
+RUN_LLM_TESTS=0   # 1 = cho phép test gọi LLM thật (tests/unit mặc định skip có lý do rõ ràng nếu =0, không skip im lặng)
+LLM_API_KEY=
 ```
 
 ### 6.4 Thứ tự khởi động (`depends_on: condition: service_healthy`)
@@ -778,7 +780,7 @@ jobs:
       - run: docker compose down -v
 ```
 
-`check_network_boundaries.py` — script tự viết, `assert` chỉ `dispatcher` dual-homed `ts-dmz-net`+`ts-sandbox-net`, chỉ `gateway` dual-homed `ts-sandbox-net`+`ts-tools-net` — fail CI nếu `docker-compose.yml` bị đổi sai ranh giới network (rủi ro đã ghi trong `trd_swarmsentinel.md` §13).
+`check_network_boundaries.py` — script tự viết, `assert` chỉ `dispatcher` dual-homed `ts-dmz-net`+`ts-sandbox-net`, chỉ `gateway` dual-homed `ts-sandbox-net`+`ts-tools-net` — fail CI nếu `docker-compose.yml` bị đổi sai ranh giới network (rủi ro đã ghi trong `docs/source/trd_swarmsentinel.md` §13).
 
 ## 20. Runbook {#20-runbook}
 
@@ -797,7 +799,7 @@ jobs:
 
 ## 21. Database schema (Postgres) {#21-db-schema}
 
-Postgres chỉ dùng cho HostRegistry (Target System không cần lưu run/finding/audit — đó thuộc Postgres của Attacker System, khác instance, xem `testbed_spec.md` §8):
+Postgres chỉ dùng cho HostRegistry (Target System không cần lưu run/finding/audit — đó thuộc Postgres của Attacker System, khác instance, xem `docs/source/testbed_spec.md` §8):
 
 ```sql
 -- db/schema.sql
@@ -878,4 +880,4 @@ async def internal_error_handler(request, exc):
 ```
 
 - Không bao giờ trả traceback/stack trace nội bộ ra ngoài response (kể cả lúc debug — dùng log, không dùng response body).
-- Gateway (mục 4.3) là ngoại lệ DUY NHẤT vì `testbed_spec.md` đã chốt format riêng `{error, required_scope}` cho 403 — mọi module khác dùng khuôn `{error, detail}` ở trên.
+- Gateway (mục 4.3) là ngoại lệ DUY NHẤT vì `docs/source/testbed_spec.md` đã chốt format riêng `{error, required_scope}` cho 403 — mọi module khác dùng khuôn `{error, detail}` ở trên.

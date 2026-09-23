@@ -1,6 +1,6 @@
 # Target System — Kế hoạch xây dựng chuẩn chỉnh
 
-> Mục tiêu: dựng đúng scope theo `testbed_spec.md`/PRD/TRD, sạch tên gọi ngay từ đầu — không phải sửa lại sau.
+> Mục tiêu: dựng đúng scope theo `docs/source/testbed_spec.md`/PRD/TRD, sạch tên gọi ngay từ đầu — không phải sửa lại sau.
 
 ## 0. Vì sao đặt tên chuẩn ngay từ đầu
 
@@ -56,12 +56,12 @@ Target System/
 ## 3. Thứ tự build (theo phụ thuộc, không theo cảm hứng)
 
 1. **Nền tảng:** `docker-compose.yml` khung (network + Postgres) → không có service nghiệp vụ nào chạy được nếu bước này sai.
-2. **Lớp agentic (core/):** HostRegistry → RAG → Agent A → Agent B → Gateway (IAM per-identity) → Tools. Đây là phần Claude Code hỗ trợ nhanh nhất — code có khuôn mẫu rõ theo contract đã biết (`testbed_spec.md`).
+2. **Lớp agentic (core/):** HostRegistry → RAG → Agent A → Agent B → Gateway (IAM per-identity) → Tools. Đây là phần Claude Code hỗ trợ nhanh nhất — code có khuôn mẫu rõ theo contract đã biết (`docs/source/testbed_spec.md`).
 3. **Test lớp agentic:** viết test suite đầy đủ (unit + integration), chạy pass trước khi đụng vào lớp ingest.
 4. **2 biến thể patched/unpatched:** chữ ký A2A + bọc untrusted-data — làm ngay sau khi lớp agentic ổn định, đừng để cuối.
 5. **Lớp ingest & lab tấn công:** firewall → DVWA → Wazuh Manager/Indexer/Dashboard → Ingest API → dispatcher → Attacker/Tailscale. Đây là phần tốn thời gian thật (chạy-và-chờ, không compress được nhiều bằng AI).
 6. **Nối 2 lớp:** dispatcher → Agent A, verify bằng 1 cuộc tấn công DVWA thật → xem alert đi hết pipeline.
-7. **7 kịch bản tấn công:** wire + test lại từng kịch bản, đối chiếu đúng `testbed_spec.md`.
+7. **7 kịch bản tấn công:** wire + test lại từng kịch bản, đối chiếu đúng `docs/source/testbed_spec.md`.
 8. **Docs:** cập nhật `docs/03-checklist.md` theo đúng trạng thái code thật, giữ `01-requirements.md`/`02-design.md` làm đích tham chiếu.
 
 ## 4. Mốc thời gian ước tính (có Claude Code hỗ trợ, làm part-time sinh viên)

@@ -1,6 +1,6 @@
 # Target System (SwarmSentinel) — Tài liệu Yêu cầu (Requirements)
 
-> Rút ra từ yêu cầu dự án tổng: `redteamAI.md` (đề bài VSOC-19), `prd_swarmsentinel.md`, `trd_swarmsentinel.md`, `testbed_spec.md`. Tài liệu này mô tả hệ thống phải làm được gì, không phải audit trạng thái code (xem `03-checklist.md` cho việc đó).
+> Rút ra từ yêu cầu dự án tổng: `docs/source/redteamAI.md` (đề bài VSOC-19), `docs/source/prd_swarmsentinel.md`, `docs/source/trd_swarmsentinel.md`, `docs/source/testbed_spec.md`. Tài liệu này mô tả hệ thống phải làm được gì, không phải audit trạng thái code (xem `03-checklist.md` cho việc đó).
 
 ---
 
@@ -19,7 +19,7 @@ Target System gồm 2 lớp bổ trợ theo chuỗi, cùng phục vụ một m�
 
 | Lớp | Vai trò | 
 |---|---|
-| **Lớp agentic** | Lõi xử lý — 2-agent phân loại severity + đề xuất hành động, đúng theo `testbed_spec.md` |
+| **Lớp agentic** | Lõi xử lý — 2-agent phân loại severity + đề xuất hành động, đúng theo `docs/source/testbed_spec.md` |
 | **Lớp ingest & lab tấn công** | Nguồn alert đầu vào — lab mạng tấn công thật + SIEM, nạp alert **thật** vào lớp agentic thay vì chỉ dùng alert giả lập tay |
 
 Từ góc nhìn đề tài VSOC-19: cả 2 lớp trên **chỉ là một Target System** — bia tập duy nhất mà Attacker System (deliverable được chấm) sẽ nhắm vào.
@@ -38,9 +38,9 @@ Từ góc nhìn đề tài VSOC-19: cả 2 lớp trên **chỉ là một Target 
 - **FR-T4.** HostRegistry — tool dùng chung `host_id → owner, criticality`, có endpoint ghi không xác thực (điểm cấy đầu độc chủ đích cho kịch bản data poisoning).
 - **FR-T5.** RAG threat_intel — nguồn tri thức cho Agent A, có endpoint ghi/đè theo `id` (điểm cấy đầu độc chủ đích cho kịch bản poisoning qua RAG).
 - **FR-T6.** 2 biến thể cấu hình Unpatched/Patched (bật/tắt xác thực chữ ký A2A + bọc dữ liệu untrusted chống injection) để demo hiệu quả vá và phục vụ retest khép vòng blue-team phía Attacker System.
-- **FR-T7 (mở rộng ngoài `testbed_spec.md` gốc).** Lớp ingest & lab tấn công mạng thật: firewall NAT có log, DVWA làm đích tấn công thật, SIEM phân tích log sinh alert thật, Ingest API + hàng đợi job + dispatcher đẩy alert thật vào Agent A — thay cho việc chỉ gửi alert giả lập tay.
+- **FR-T7 (mở rộng ngoài `docs/source/testbed_spec.md` gốc).** Lớp ingest & lab tấn công mạng thật: firewall NAT có log, DVWA làm đích tấn công thật, SIEM phân tích log sinh alert thật, Ingest API + hàng đợi job + dispatcher đẩy alert thật vào Agent A — thay cho việc chỉ gửi alert giả lập tay.
 - **FR-T8.** Toàn bộ tương tác liên-agent + tool call phải sinh bằng chứng quan sát được (tracing) có đủ `run_id`, `scenario_code`, `agent_name`, `variant`, phục vụ Judge của Attacker System.
-- **FR-T9.** Contract HTTP (route, status code, response body, tên scope) phải khớp `testbed_spec.md` — nguồn chân lý mà Attacker System phụ thuộc vào khi cấy kịch bản.
+- **FR-T9.** Contract HTTP (route, status code, response body, tên scope) phải khớp `docs/source/testbed_spec.md` — nguồn chân lý mà Attacker System phụ thuộc vào khi cấy kịch bản.
 
 ### 2.2 Ngoài phạm vi (Target System không cần làm)
 
@@ -72,9 +72,9 @@ Từ góc nhìn đề tài VSOC-19: cả 2 lớp trên **chỉ là một Target 
 
 ### 3.3 Gateway (IAM nội bộ)
 
-- Route theo prefix quy định trong `testbed_spec.md` (`/agent-b/propose_action`, `/agent-b/execute_block`, `/a2a/response-advisor` pass-through không xác thực).
+- Route theo prefix quy định trong `docs/source/testbed_spec.md` (`/agent-b/propose_action`, `/agent-b/execute_block`, `/a2a/response-advisor` pass-through không xác thực).
 - IAM **per-identity**: mỗi API key gắn đúng 1 tập scope tối thiểu (`agent_b_api_key` → chỉ `tools:propose`; `privileged_api_key` → `tools:propose` + `block:execute`) — không phải 403 cứng cho mọi request.
-- 401 khi thiếu/sai key; 403 đúng format `{error, required_scope}` khi đủ key nhưng thiếu scope — khớp `testbed_spec.md`.
+- 401 khi thiếu/sai key; 403 đúng format `{error, required_scope}` khi đủ key nhưng thiếu scope — khớp `docs/source/testbed_spec.md`.
 - Guard chống misconfig: nếu 2 key bị cấp trùng nhau, ép về scope thấp nhất (an toàn hơn) thay vì fail-open.
 
 ### 3.4 HostRegistry
@@ -117,7 +117,7 @@ Từ góc nhìn đề tài VSOC-19: cả 2 lớp trên **chỉ là một Target 
 - **NFR-2 (Tách bạch tất định/không tất định).** Mọi output phụ thuộc LLM phải đánh dấu rõ `mode`, không được lẫn với output heuristic khi so sánh kết quả.
 - **NFR-3 (Ranh giới quyền hạn thật).** IAM phải là rào chặn kỹ thuật thật (Gateway từ chối request), không phải chỉ ghi trong prompt hướng dẫn agent "không được làm X".
 - **NFR-4 (Cách ly mạng).** Nguyên tắc bắc cầu network: mỗi ranh giới mạng (outer↔dmz, dmz↔sandbox, sandbox↔tools) chỉ có đúng 1 service được phép bắc cầu — không service nào khác được attach chéo network.
-- **NFR-5 (Khớp contract).** Route, status code, response body, tên scope phải khớp tuyệt đối với `testbed_spec.md` — đây là hợp đồng với đội Attacker System, sai lệch dù nhỏ cũng làm hỏng kịch bản test tự động của họ.
+- **NFR-5 (Khớp contract).** Route, status code, response body, tên scope phải khớp tuyệt đối với `docs/source/testbed_spec.md` — đây là hợp đồng với đội Attacker System, sai lệch dù nhỏ cũng làm hỏng kịch bản test tự động của họ.
 - **NFR-6 (Observability).** Không có hành động nào (tool call, quyết định agent) xảy ra mà không sinh bằng chứng quan sát được — nguyên tắc "không có trace thì coi như không xảy ra" khi Judge chấm.
 
 ---
