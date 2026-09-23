@@ -1,0 +1,1 @@
+-- TODO bước 2 (PLAN.md): copy + rà lại schema.sql từ v1 (db/schema.sql trong P-012_AlertSenseMini)

@@ -1,0 +1,96 @@
+name: targetsystem
+
+networks:
+  outer:
+    name: ts-outer-net
+  dmz:
+    name: ts-dmz-net
+  sandbox_net:
+    name: ts-sandbox-net
+  tools_net:
+    name: ts-tools-net
+    internal: true
+
+volumes:
+  ts_pgdata:
+  ts_qdrantdata:
+  ts_tailscale_state:
+  ts_wazuh_api_configuration:
+  ts_wazuh_etc:
+  ts_wazuh_logs:
+  ts_wazuh_queue:
+  ts_wazuh_var_multigroups:
+  ts_wazuh_integrations:
+  ts_wazuh_active_response:
+  ts_wazuh_agentless:
+  ts_wazuh_wodles:
+  ts_wazuh_indexer_data:
+  ts_wazuh_dashboard_config:
+  ts_wazuh_dashboard_custom:
+  ts_dvwa_apache_logs:
+
+services:
+  # ── Nền tảng ──────────────────────────────────────────────
+  postgres:
+    image: postgres:16
+    container_name: ts-postgres
+    environment:
+      POSTGRES_DB: targetsystem
+      POSTGRES_USER: ts
+      POSTGRES_PASSWORD: ts
+    volumes:
+      - ts_pgdata:/var/lib/postgresql/data
+      - ./db/schema.sql:/docker-entrypoint-initdb.d/schema.sql:ro
+    networks: [sandbox_net]
+
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: ts-qdrant
+    volumes:
+      - ts_qdrantdata:/qdrant/storage
+    networks: [sandbox_net]
+
+  # ── Lớp agentic (core/) — TODO: build theo thứ tự trong PLAN.md bước 2 ──
+  host-registry:
+    build: ./core/host_registry
+    container_name: ts-host-registry
+    networks: [sandbox_net]
+
+  rag:
+    build: ./core/rag
+    container_name: ts-rag
+    networks: [sandbox_net]
+
+  agent-a:
+    build: ./core/agent_a
+    container_name: ts-agent-a
+    networks: [sandbox_net]
+
+  agent-b:
+    build: ./core/agent_b
+    container_name: ts-agent-b
+    networks: [sandbox_net]
+
+  gateway:
+    build: ./core/gateway
+    container_name: ts-gateway
+    networks: [sandbox_net, tools_net]
+
+  tools:
+    build: ./core/tools
+    container_name: ts-tools
+    networks: [tools_net]
+
+  # ── Lớp ingest & lab tấn công (ingest/) — TODO: build theo PLAN.md bước 5 ──
+  ingest-api:
+    build: ./ingest/ingest-api
+    container_name: ts-ingest-api
+    networks: [dmz, sandbox_net]
+
+  dispatcher:
+    build: ./ingest/dispatcher
+    container_name: ts-dispatcher
+    networks: [sandbox_net]
+
+  # firewall, dvwa, wazuh-manager, wazuh-indexer, wazuh-dashboard, attacker, tailscale:
+  # thêm sau ở bước 5 (PLAN.md) — chưa cần trong giai đoạn build lớp agentic

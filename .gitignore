@@ -1,0 +1,20 @@
+# env / secrets
+.env
+*.env
+!.env.example
+
+# python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# node (nếu có dashboard/tooling sau này)
+node_modules/
+
+# docker / data
+*.log
+.DS_Store
+
+# wazuh/dvwa runtime data nếu mount ra ngoài volume
+ingest/wazuh/**/data/
